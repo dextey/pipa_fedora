@@ -40,24 +40,31 @@ command -v dnf >/dev/null || { err "dnf not found — is this Fedora?"; exit 1; 
 arch="$(uname -m)"
 [[ "$arch" == "aarch64" ]] || warn "Arch is '$arch', not aarch64 — the COPR is aarch64-only; continuing anyway."
 
-# Install a group; skip unavailable packages instead of failing the whole run,
-# then report which ones didn't end up installed.
+# Install a group of packages resiliently and report which ones didn't install.
+#
+# IMPORTANT: installs ONE package at a time. A single bundled `dnf install` aborts
+# the whole transaction if any one package has an unresolvable dependency
+# (--skip-unavailable only skips packages that don't EXIST, not broken-dep ones),
+# which would take hyprland down with it. Per-package installs keep failures
+# isolated, and we print the real error for anything that fails.
 install_group() {
   local name="$1"; shift
   local pkgs=("$@")
   say "Installing group: $name"
-  sudo dnf install -y --skip-unavailable "${pkgs[@]}" || warn "dnf returned non-zero for '$name' (continuing)"
-  local missing=()
-  local p
+  local p out
   for p in "${pkgs[@]}"; do
-    rpm -q "$p" &>/dev/null || missing+=("$p")
+    if rpm -q "$p" &>/dev/null; then
+      ok "$p (already present)"
+      continue
+    fi
+    if out=$(sudo dnf install -y "$p" 2>&1); then
+      ok "$p"
+    else
+      warn "failed: $p"
+      printf '%s\n' "$out" | tail -3 | sed 's/^/          /'   # show the real reason
+      MISSING_ALL+=("$p")
+    fi
   done
-  if ((${#missing[@]})); then
-    warn "Not installed (unavailable on this repo/arch, or named differently): ${missing[*]}"
-    MISSING_ALL+=("${missing[@]}")
-  else
-    ok "All of '$name' installed."
-  fi
 }
 
 # =========================================================================
