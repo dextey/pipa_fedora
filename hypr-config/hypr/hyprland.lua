@@ -184,8 +184,10 @@ hl.bind(mainMod .. " + V",             hl.dsp.window.float({ action = "toggle" }
 hl.bind(mainMod .. " + J",             hl.dsp.layout("togglesplit"))
 hl.bind(mainMod .. " + F",             hl.dsp.window.fullscreen())
 hl.bind(mainMod .. " + L",             hl.dsp.exec_cmd("hyprlock"))
-hl.bind(mainMod .. " + M",             hl.dsp.exec_cmd("wlogout"))  -- power menu
-hl.bind("",      "Print",              hl.dsp.exec_cmd("grim -g \"$(slurp)\" - | wl-copy")) -- region screenshot -> clipboard
+hl.bind(mainMod .. " + M",             hl.dsp.exec_cmd("~/.config/hypr/power-menu.sh"))  -- compact rofi power menu
+-- Physical power button: lock instead of shutdown (logind set to ignore it)
+hl.bind("XF86PowerOff",                hl.dsp.exec_cmd("hyprlock"))
+hl.bind("Print",                       hl.dsp.exec_cmd("grim -g \"$(slurp)\" - | wl-copy")) -- region screenshot -> clipboard
 
 -- Focus move (arrows)
 hl.bind(mainMod .. " + left",  hl.dsp.focus({ direction = "left" }))

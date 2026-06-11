@@ -25,11 +25,11 @@ place() {  # place <src-rel> <dest-abs>
 }
 
 # ---------- 1. missing packages ----------
-say "Installing packages still needed (wlogout, hyprpaper, hypridle, etc.)"
-for p in wlogout hyprpaper hypridle hyprlock rofi-wayland alacritty mako \
+say "Installing packages still needed (hyprpaper, hypridle, rofi, etc.)"
+for p in hyprpaper hypridle hyprlock rofi-wayland alacritty mako \
          waybar nautilus brightnessctl playerctl pavucontrol \
          network-manager-applet blueman cliphist polkit-gnome \
-         jetbrains-mono-fonts-all fontawesome6-fonts; do
+         grim slurp jetbrains-mono-fonts-all fontawesome6-fonts; do
   rpm -q "$p" &>/dev/null && { ok "$p present"; continue; }
   sudo dnf install -y "$p" &>/dev/null && ok "installed $p" || warn "could not install $p (check name/repo)"
 done
@@ -39,6 +39,32 @@ if ! command -v squeekboard &>/dev/null && ! command -v wvkbd-mobintl &>/dev/nul
   sudo dnf install -y squeekboard &>/dev/null && ok "installed squeekboard" \
     || warn "no OSK installed — build wvkbd from source (github.com/jjsullivan5196/wvkbd)"
 fi
+
+# ---------- 1b. JetBrainsMono Nerd Font (fixes 'boxes' in waybar/rofi) ----------
+say "Installing JetBrainsMono Nerd Font"
+if fc-list | grep -qi "JetBrainsMono Nerd Font"; then
+  ok "Nerd Font already present"
+else
+  fdir="$HOME/.local/share/fonts"; mkdir -p "$fdir"
+  if command -v curl &>/dev/null && command -v unzip &>/dev/null && \
+     curl -fsL -o "$fdir/JetBrainsMono.zip" \
+       "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip" 2>/dev/null; then
+    ( cd "$fdir" && unzip -oq JetBrainsMono.zip && rm -f JetBrainsMono.zip )
+    fc-cache -f >/dev/null 2>&1 && ok "installed JetBrainsMono Nerd Font"
+  else
+    warn "could not download the Nerd Font — install curl+unzip and re-run, or fetch it manually"
+  fi
+fi
+
+# ---------- 1c. power-key behaviour (stop the tablet shutting down) ----------
+say "Setting physical power button to NOT shut down (short press) "
+sudo mkdir -p /etc/systemd/logind.conf.d
+sudo tee /etc/systemd/logind.conf.d/10-power.conf >/dev/null <<'EOF'
+[Login]
+HandlePowerKey=ignore
+HandlePowerKeyLongPress=poweroff
+EOF
+ok "logind power-key rule written (reboot to apply)"
 
 # ---------- 2. place config files ----------
 say "Placing config files (existing ones are backed up)"
@@ -51,8 +77,8 @@ place "waybar/style.css"         "$cfg/waybar/style.css"
 place "rofi/config.rasi"         "$cfg/rofi/config.rasi"
 place "mako/config"              "$cfg/mako/config"
 place "alacritty/alacritty.toml" "$cfg/alacritty/alacritty.toml"
-place "wlogout/layout"           "$cfg/wlogout/layout"
-place "wlogout/style.css"        "$cfg/wlogout/style.css"
+place "hypr/power-menu.sh"        "$cfg/hypr/power-menu.sh"
+chmod +x "$cfg/hypr/power-menu.sh" 2>/dev/null && ok "power-menu.sh executable"
 
 # ---------- 3. wallpaper ----------
 say "Setting a wallpaper"
@@ -96,7 +122,7 @@ KEYBINDS (Super = Windows key):
   Super+1..5 ............... switch workspace   (3-finger swipe also works)
   Super+Shift+1..5 ......... move window to workspace
   Super+F .................. fullscreen   Super+V floating
-  Super+L .................. lock         Super+M power menu (wlogout)
+  Super+L .................. lock         Super+M power menu (rofi)
   Print .................... region screenshot to clipboard
 
 Backups of any replaced files are saved as <file>.bak-TIMESTAMP next to them.

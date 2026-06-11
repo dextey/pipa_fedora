@@ -82,7 +82,7 @@
 
     "custom/power": {
         "format": "⏻",
-        "on-click": "wlogout",
+        "on-click": "~/.config/hypr/power-menu.sh",
         "tooltip": false
     }
 }
