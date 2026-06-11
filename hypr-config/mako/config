@@ -1,0 +1,38 @@
+# Mako — Catppuccin Mocha, with a real timeout so notifications auto-dismiss.
+# This is the fix for "notification pops up but never goes away":
+# the default-timeout was unset, so popups stayed forever.
+
+# ---- behaviour ----
+default-timeout=5000      # 5 seconds, in ms  <-- the key fix
+ignore-timeout=0
+max-visible=4
+layer=overlay
+anchor=top-right
+
+# ---- sizing (touch-friendly) ----
+width=380
+height=140
+margin=12
+padding=14
+border-size=2
+border-radius=10
+font=JetBrainsMono Nerd Font 12
+icons=1
+max-icon-size=48
+
+# ---- Catppuccin Mocha colours ----
+background-color=#1e1e2e
+text-color=#cdd6f4
+border-color=#cba6f7
+progress-color=over #313244
+
+[urgency=low]
+border-color=#89b4fa
+default-timeout=4000
+
+[urgency=normal]
+border-color=#cba6f7
+
+[urgency=critical]
+border-color=#f38ba8
+default-timeout=0         # critical stays until dismissed (intentional)

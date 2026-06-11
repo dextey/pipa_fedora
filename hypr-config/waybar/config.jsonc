@@ -1,0 +1,88 @@
+{
+    "layer": "top",
+    "position": "top",
+    "height": 40,
+    "spacing": 6,
+    "margin-top": 4,
+    "margin-left": 8,
+    "margin-right": 8,
+
+    "modules-left":   ["hyprland/workspaces", "hyprland/window"],
+    "modules-center": ["clock"],
+    "modules-right":  ["network", "bluetooth", "pulseaudio", "battery", "tray", "custom/power"],
+
+    "hyprland/workspaces": {
+        "format": "{icon}",
+        "on-click": "activate",
+        "format-icons": {
+            "1": "1",
+            "2": "2",
+            "3": "3",
+            "4": "4",
+            "5": "5",
+            "active": "",
+            "default": ""
+        },
+        "persistent-workspaces": { "*": 5 }
+    },
+
+    "hyprland/window": {
+        "format": "{title}",
+        "max-length": 40,
+        "separate-outputs": true
+    },
+
+    "clock": {
+        "format": "{:%a %d %b   %I:%M %p}",
+        "tooltip-format": "<tt><big>{calendar}</big></tt>",
+        "calendar": {
+            "mode": "month",
+            "format": { "today": "<span color='#cba6f7'><b>{}</b></span>" }
+        }
+    },
+
+    "network": {
+        "format-wifi": "  {signalStrength}%",
+        "format-ethernet": "  ",
+        "format-disconnected": "  ",
+        "tooltip-format-wifi": "{essid} ({signalStrength}%)",
+        "tooltip-format-disconnected": "Disconnected",
+        "on-click": "nm-connection-editor"
+    },
+
+    "bluetooth": {
+        "format": "  ",
+        "format-disabled": "  ",
+        "format-connected": "  {num_connections}",
+        "tooltip-format": "{controller_alias}",
+        "tooltip-format-connected": "{device_enumerate}",
+        "on-click": "blueman-manager"
+    },
+
+    "pulseaudio": {
+        "format": "{icon}  {volume}%",
+        "format-muted": "  muted",
+        "format-icons": { "default": ["", "", ""] },
+        "on-click": "pavucontrol",
+        "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+    },
+
+    "battery": {
+        "states": { "warning": 30, "critical": 15 },
+        "format": "{icon}  {capacity}%",
+        "format-charging": "  {capacity}%",
+        "format-icons": ["", "", "", "", ""],
+        "tooltip-format": "{time}"
+    },
+
+    "tray": {
+        "icon-size": 18,
+        "spacing": 8
+    },
+
+    "custom/power": {
+        "format": "⏻",
+        "on-click": "wlogout",
+        "tooltip": false
+    }
+}
