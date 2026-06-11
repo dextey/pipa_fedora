@@ -4,11 +4,15 @@
 # Clean Hyprland setup for Fedora (aarch64) on the Xiaomi Pad 6 (pipa).
 #
 # What it does:
-#   1. Enables the aarch64 Hyprland COPR
+#   1. Enables the lionheartp/Hyprland COPR (has aarch64 builds for F43/44/rawhide)
 #   2. Installs everything available in resilient passes (missing pkgs are
 #      skipped, not fatal) and reports exactly what wasn't found
 #   3. Enables the couple of system services that need it
 #   4. Prints the build-from-source leftovers and next steps
+#
+# Assumes you're installing ALONGSIDE GNOME, so packages GNOME already provides
+# (NetworkManager, bluez, xdg-desktop-portal-gtk, base fonts, PipeWire) are NOT
+# reinstalled here. Only Hyprland-session components GNOME can't share are added.
 #
 # Safe to re-run. Does NOT remove GNOME — Hyprland is added alongside it,
 # and you pick the session at the GDM login screen.
@@ -57,53 +61,62 @@ install_group() {
 }
 
 # =========================================================================
-say "Step 1/5 — enable the aarch64 Hyprland COPR"
-# Standard lionheartp/Hyprland COPR is x86_64-only; this fork builds for aarch64.
-sudo dnf copr enable -y technochip/Hyprland-aarch64 || warn "COPR enable failed — check the name at copr.fedorainfracloud.org"
+say "Step 1/5 — enable the Hyprland COPR (lionheartp — builds aarch64)"
+# Remove the wrong aarch64-fork COPR if a previous run enabled it (it had no
+# usable builds, which made the whole hypr group come up empty).
+sudo dnf copr remove technochip/Hyprland-aarch64 2>/dev/null || true
+# lionheartp/Hyprland publishes aarch64 packages for F43/F44/rawhide.
+sudo dnf copr enable -y lionheartp/Hyprland || warn "COPR enable failed — check the name at copr.fedorainfracloud.org"
 sudo dnf -y makecache || true
 
 # =========================================================================
 say "Step 2/5 — install packages"
 
-# --- Core Hyprland ecosystem (from the COPR) ---
+# --- Core Hyprland ecosystem (from the lionheartp COPR) ---
 # If any of THESE show as missing, stop and check the COPR — they're essential.
 install_group "hypr-core" \
   hyprland hyprlock hypridle hyprpaper hyprpicker hyprcursor \
   xdg-desktop-portal-hyprland
 
-# --- Bar / launcher / terminal / notifications / wallpaper helpers ---
+# --- Bar / launcher / terminal / notifications (all from Fedora main repos) ---
+# rofi-wayland is in Fedora's repos, NOT the COPR — it shouldn't depend on it.
 install_group "desktop-shell" \
   waybar rofi-wayland kitty mako \
   wl-clipboard cliphist grim slurp
 
-# --- System glue: portal backend + polkit agent (GUI password prompts) ---
-install_group "portal-polkit" \
-  xdg-desktop-portal-gtk polkit-gnome
+# --- System glue: polkit agent (GUI password prompts) ---
+# GNOME's own polkit agent only runs in a GNOME session, so Hyprland still
+# needs a standalone one. xdg-desktop-portal-gtk is already present from GNOME.
+install_group "polkit" \
+  polkit-gnome
 
 # --- Hardware controls your keybinds / Waybar modules will call ---
+# NetworkManager + bluez are already installed by GNOME — not repeated here.
+# nm-applet/blueman are optional tray togglers for the Hyprland session.
 install_group "controls" \
   brightnessctl playerctl pavucontrol \
-  NetworkManager network-manager-applet blueman bluez
+  network-manager-applet blueman
 
-# --- Theming so GTK + Qt apps look consistent ---
+# --- Theming so GTK + Qt apps look consistent UNDER Hyprland (optional) ---
+# GNOME's own theming doesn't apply in a Hyprland session.
 install_group "theming" \
   nwg-look qt5ct qt6ct
 
-# --- Fonts: needed or Waybar/rofi render boxes instead of icons ---
-# (Nerd Font glyphs: Fedora ships the base JetBrains Mono, not the Nerd-patched
-#  build — see the note at the end for getting full Nerd Font icon coverage.)
+# --- Fonts: only the icon font Waybar/rofi need; GNOME already ships the rest ---
+# Correct package name is fontawesome6-fonts (NOT "fontawesome").
 install_group "fonts" \
-  jetbrains-mono-fonts-all fontawesome6-fonts fontawesome-fonts \
-  google-noto-emoji-color-fonts google-noto-sans-fonts
+  fontawesome6-fonts fontawesome-fonts jetbrains-mono-fonts-all
 
 # --- Tablet essentials: on-screen keyboard + sensor proxy ---
 # Tries both common OSKs; whichever exists in your repos gets installed.
+# wvkbd often isn't packaged for aarch64 — if both are missing, build wvkbd.
 install_group "tablet" \
   squeekboard wvkbd iio-sensor-proxy
 
 # =========================================================================
 say "Step 3/5 — enable services"
-sudo systemctl enable --now bluetooth.service 2>/dev/null && ok "bluetooth enabled" || warn "could not enable bluetooth.service"
+# bluez/NetworkManager are already enabled by GNOME; this is just a safety net.
+sudo systemctl enable --now bluetooth.service 2>/dev/null && ok "bluetooth enabled" || warn "bluetooth.service unchanged (likely already on)"
 # NOTE: iio-sensor-proxy is intentionally NOT auto-enabled — pipa sensors are
 # disabled by default and flaky after suspend. Enable manually if you want
 # auto-rotation/brightness:  sudo systemctl enable --now iio-sensor-proxy
