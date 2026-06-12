@@ -1,15 +1,17 @@
 {
+    // Sized for the pipa in landscape: 1440x900 logical (2880x1800 physical @ 2x scale).
+    // Values are logical px; the compositor doubles them on the 2x display.
     "layer": "top",
     "position": "top",
-    "height": 40,
-    "spacing": 6,
-    "margin-top": 4,
-    "margin-left": 8,
-    "margin-right": 8,
+    "height": 38,          // ~76px physical, ~4.2% of the 900px logical height — touch-friendly
+    "spacing": 8,
+    "margin-top": 6,
+    "margin-left": 10,
+    "margin-right": 10,
 
     "modules-left":   ["hyprland/workspaces", "hyprland/window"],
     "modules-center": ["clock"],
-    "modules-right":  ["network", "bluetooth", "pulseaudio", "battery", "tray", "custom/power"],
+    "modules-right":  ["cpu", "network", "bluetooth", "pulseaudio", "battery", "group/tray-expander", "custom/power"],
 
     "hyprland/workspaces": {
         "format": "{icon}",
@@ -34,6 +36,7 @@
 
     "clock": {
         "format": "{:%a %d %b   %I:%M %p}",
+        "format-alt": "{:W%V   %d %B %Y}",
         "tooltip-format": "<tt><big>{calendar}</big></tt>",
         "calendar": {
             "mode": "month",
@@ -41,12 +44,21 @@
         }
     },
 
+    "cpu": {
+        "interval": 5,
+        "format": "󰍛  {usage}%",
+        "tooltip": true
+    },
+
     "network": {
-        "format-wifi": "  {signalStrength}%",
-        "format-ethernet": "  ",
-        "format-disconnected": "  ",
+        "format-icons": ["󰤯", "󰤟", "󰤢", "󰤥", "󰤨"],
+        "format-wifi": "{icon}  {signalStrength}%",
+        "format-ethernet": "󰀂  ",
+        "format-disconnected": "󰤮  ",
         "tooltip-format-wifi": "{essid} ({signalStrength}%)",
+        "tooltip-format-ethernet": "Connected",
         "tooltip-format-disconnected": "Disconnected",
+        "interval": 3,
         "on-click": "nm-connection-editor"
     },
 
@@ -69,10 +81,29 @@
 
     "battery": {
         "states": { "warning": 30, "critical": 15 },
-        "format": "{icon}  {capacity}%",
-        "format-charging": "  {capacity}%",
-        "format-icons": ["", "", "", "", ""],
-        "tooltip-format": "{time}"
+        "format": "{capacity}%  {icon}",
+        "format-charging": "{capacity}%  {icon}",
+        "format-full": "{capacity}%  󰂅",
+        "format-icons": {
+            "charging": ["󰢜", "󰂆", "󰂇", "󰂈", "󰢝", "󰂉", "󰢞", "󰂊", "󰂋", "󰂅"],
+            "default":  ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
+        },
+        "tooltip-format-discharging": "{power:>1.0f}W↓ {capacity}% ({time})",
+        "tooltip-format-charging": "{power:>1.0f}W↑ {capacity}%"
+    },
+
+    "group/tray-expander": {
+        "orientation": "inherit",
+        "drawer": {
+            "transition-duration": 400,
+            "children-class": "tray-group-item"
+        },
+        "modules": ["custom/expand-icon", "tray"]
+    },
+
+    "custom/expand-icon": {
+        "format": "",
+        "tooltip": false
     },
 
     "tray": {

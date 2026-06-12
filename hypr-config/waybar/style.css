@@ -14,16 +14,18 @@
 @define-color yellow   #f9e2af;
 @define-color peach    #fab387;
 
+/* All sizes logical px; the pipa's 2x scale doubles them on the panel.
+   font-size 13 -> ~26px physical, crisp on the 1440x900 logical canvas. */
 * {
     font-family: "JetBrainsMono Nerd Font", "Font Awesome 6 Free", sans-serif;
-    font-size: 15px;
+    font-size: 13px;
     min-height: 0;
 }
 
 window#waybar {
     background: @base;
     color: @text;
-    border-radius: 12px;
+    border-radius: 10px;
     border: 2px solid @surface1;
 }
 
@@ -57,11 +59,13 @@ window#waybar {
     padding: 0 14px;
 }
 
+#cpu,
 #network,
 #bluetooth,
 #pulseaudio,
 #battery,
 #custom-power,
+#custom-expand-icon,
 #tray {
     padding: 2px 12px;
     margin: 4px 2px;
@@ -69,10 +73,12 @@ window#waybar {
     border-radius: 8px;
 }
 
+#cpu            { color: @peach; }
 #network        { color: @blue; }
 #bluetooth      { color: @blue; }
 #pulseaudio     { color: @green; }
 #battery        { color: @green; }
+#custom-expand-icon { color: @subtext; }
 
 #battery.warning  { color: @yellow; }
 #battery.critical { color: @red; }
@@ -81,7 +87,7 @@ window#waybar {
 #custom-power {
     color: @red;
     background: @surface1;
-    font-size: 17px;
+    font-size: 15px;
     padding: 2px 14px;
 }
 
