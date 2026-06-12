@@ -1,6 +1,6 @@
 -- ============================================================
 --  Hyprland 0.55.3 config — Xiaomi Pad 6 (pipa), touch tablet
---  Catppuccin Mocha · 5 workspaces · Waybar · rofi · touch-tuned
+--  Nord · 5 workspaces · Waybar · rofi · touch-tuned
 --  API matches the shipped /usr/share/hypr/hyprland.lua (0.55.3)
 --
 --  Modular, standalone layout (no omarchy dependency). The shipped

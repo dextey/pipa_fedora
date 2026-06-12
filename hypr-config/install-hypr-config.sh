@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # install-hypr-config.sh
-# Places the Catppuccin/touch Hyprland config set for the Xiaomi Pad 6 (pipa).
+# Places the Nord/touch Hyprland config set for the Xiaomi Pad 6 (pipa).
 # Run from the extracted hypr-config/ folder, as your normal user:
 #   chmod +x install-hypr-config.sh && ./install-hypr-config.sh
 #
@@ -87,17 +87,20 @@ place "hypr/power-menu.sh"        "$cfg/hypr/power-menu.sh"
 chmod +x "$cfg/hypr/power-menu.sh" 2>/dev/null && ok "power-menu.sh executable"
 
 # ---------- 3. wallpaper ----------
-say "Setting a wallpaper"
+say "Setting a wallpaper (Nord)"
 wp="$cfg/hypr/wallpaper.png"
 if [[ ! -f "$wp" ]]; then
-  # try to fetch a Catppuccin wallpaper; fall back to a shipped one
-  if command -v curl &>/dev/null && \
-     curl -fsL -o "$wp" "https://raw.githubusercontent.com/zhichaoh/catppuccin-wallpapers/main/landscapes/evening-sky.png" 2>/dev/null; then
-    ok "downloaded a Catppuccin wallpaper"
+  # Generate a solid Nord (nord0 #2e3440) wallpaper at the panel's landscape
+  # resolution. This is offline-reliable (no dead download URLs); drop a scenic
+  # Nord image at $wp afterwards if you want something fancier.
+  if command -v magick &>/dev/null; then
+    magick -size 2880x1800 xc:'#2e3440' "$wp" && ok "generated a solid Nord wallpaper"
+  elif command -v convert &>/dev/null; then
+    convert -size 2880x1800 xc:'#2e3440' "$wp" && ok "generated a solid Nord wallpaper"
   elif [[ -f /usr/share/hypr/wall0.png ]]; then
-    cp /usr/share/hypr/wall0.png "$wp" && warn "download failed — used shipped /usr/share/hypr/wall0.png"
+    cp /usr/share/hypr/wall0.png "$wp" && warn "no ImageMagick — used shipped /usr/share/hypr/wall0.png"
   else
-    warn "no wallpaper set — drop any image at $wp"
+    warn "no wallpaper set — drop a Nord image at $wp (or install ImageMagick and re-run)"
   fi
 else
   ok "wallpaper already present at $wp"

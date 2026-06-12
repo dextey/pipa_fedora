@@ -1,13 +1,13 @@
 {
-    // Sized for the pipa in landscape: 1440x900 logical (2880x1800 physical @ 2x scale).
-    // Values are logical px; the compositor doubles them on the 2x display.
+    // Flat, flush, full-width bar styled after the Omarchy reference.
+    // Sizes are logical px (doubled on the pipa's 2x display).
     "layer": "top",
     "position": "top",
-    "height": 38,          // ~76px physical, ~4.2% of the 900px logical height — touch-friendly
-    "spacing": 8,
-    "margin-top": 6,
-    "margin-left": 10,
-    "margin-right": 10,
+    "height": 34,          // ~68px physical — flat omarchy-style strip, still touch-friendly
+    "spacing": 4,
+    "margin-top": 0,
+    "margin-left": 0,
+    "margin-right": 0,
 
     "modules-left":   ["hyprland/workspaces", "hyprland/window"],
     "modules-center": ["clock"],
@@ -17,13 +17,13 @@
         "format": "{icon}",
         "on-click": "activate",
         "format-icons": {
+            "default": "",
             "1": "1",
             "2": "2",
             "3": "3",
             "4": "4",
             "5": "5",
-            "active": "",
-            "default": ""
+            "active": "󱓻"
         },
         "persistent-workspaces": { "*": 5 }
     },
@@ -40,7 +40,7 @@
         "tooltip-format": "<tt><big>{calendar}</big></tt>",
         "calendar": {
             "mode": "month",
-            "format": { "today": "<span color='#cba6f7'><b>{}</b></span>" }
+            "format": { "today": "<span color='#88c0d0'><b>{}</b></span>" }
         }
     },
 

@@ -1,16 +1,16 @@
 -----------------------
 ---- LOOK AND FEEL ----
 -----------------------
--- Catppuccin Mocha accent (mauve) borders.
+-- Nord accent (frost) borders.
 hl.config({
     general = {
         gaps_in  = 4,
         gaps_out = 8,           -- tighter than default; more screen for a tablet
         border_size = 2,
         col = {
-            -- mauve -> blue gradient active border
-            active_border   = { colors = { "rgba(cba6f7ee)", "rgba(89b4faee)" }, angle = 45 },
-            inactive_border = "rgba(45475aaa)", -- surface1
+            -- cyan -> blue frost gradient active border (nord8 -> nord9)
+            active_border   = { colors = { "rgba(88c0d0ee)", "rgba(81a1c1ee)" }, angle = 45 },
+            inactive_border = "rgba(434c5eaa)", -- nord2
         },
         resize_on_border = true, -- easier to grab on touch
         allow_tearing    = false,
@@ -26,7 +26,7 @@ hl.config({
             enabled      = true,
             range        = 4,
             render_power = 3,
-            color        = 0xee11111b,   -- crust
+            color        = 0xee242933,   -- nord darker
         },
         blur = {
             enabled  = true,

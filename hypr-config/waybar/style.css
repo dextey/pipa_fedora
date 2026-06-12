@@ -1,104 +1,93 @@
-/* Catppuccin Mocha — touch-sized Waybar for Xiaomi Pad 6 */
+/* Nord — flat, flush Waybar styled after the Omarchy reference (Xiaomi Pad 6).
+   Flat strip, no floating island, no per-module pills — just colored glyphs.
+   Sizes are logical px; the pipa's 2x scale doubles them on the panel. */
 
-@define-color base    #1e1e2e;
-@define-color mantle  #181825;
-@define-color crust   #11111b;
-@define-color text    #cdd6f4;
-@define-color subtext #a6adc8;
-@define-color surface0 #313244;
-@define-color surface1 #45475a;
-@define-color blue     #89b4fa;
-@define-color mauve    #cba6f7;
-@define-color green    #a6e3a1;
-@define-color red      #f38ba8;
-@define-color yellow   #f9e2af;
-@define-color peach    #fab387;
+/* ---- Nord palette ---- */
+@define-color base    #2e3440;  /* nord0  */
+@define-color mantle  #272c36;
+@define-color crust   #242933;
+@define-color surface0 #3b4252; /* nord1  */
+@define-color surface1 #434c5e; /* nord2  */
+@define-color overlay  #4c566a; /* nord3  */
+@define-color text    #eceff4;  /* nord6  */
+@define-color subtext #d8dee9;  /* nord4  */
+@define-color teal    #8fbcbb;  /* nord7  */
+@define-color cyan    #88c0d0;  /* nord8  — primary accent */
+@define-color blue    #81a1c1;  /* nord9  */
+@define-color red     #bf616a;  /* nord11 */
+@define-color orange  #d08770;  /* nord12 */
+@define-color yellow  #ebcb8b;  /* nord13 */
+@define-color green   #a3be8c;  /* nord14 */
+@define-color purple  #b48ead;  /* nord15 */
 
-/* All sizes logical px; the pipa's 2x scale doubles them on the panel.
-   font-size 13 -> ~26px physical, crisp on the 1440x900 logical canvas. */
 * {
     font-family: "JetBrainsMono Nerd Font", "Font Awesome 6 Free", sans-serif;
     font-size: 13px;
     min-height: 0;
+    border: none;
+    border-radius: 0;
 }
 
+/* Flat full-width bar — no border, no rounding, no island (Omarchy look). */
 window#waybar {
     background: @base;
     color: @text;
-    border-radius: 10px;
-    border: 2px solid @surface1;
 }
 
-/* generous padding = bigger finger targets */
+.modules-left  { margin-left: 8px; }
+.modules-right { margin-right: 8px; }
+
+/* Workspaces: plain numbers, accent dot for the active one, dimmed when empty. */
 #workspaces button {
-    padding: 2px 12px;
-    margin: 4px 2px;
+    all: initial;
     color: @subtext;
-    background: transparent;
-    border-radius: 8px;
+    padding: 0 8px;
+    margin: 0 2px;
+    min-width: 9px;
 }
+#workspaces button.active { color: @cyan; }
+#workspaces button.empty  { opacity: 0.5; }
+#workspaces button:hover  { color: @text; }
 
-#workspaces button.active {
-    color: @base;
-    background: @mauve;
-}
-
-#workspaces button:hover {
-    background: @surface0;
-    color: @text;
-}
-
-#window {
-    color: @subtext;
-    padding: 0 10px;
-}
+#window { color: @subtext; padding: 0 8px; }
 
 #clock {
     color: @text;
     font-weight: bold;
-    padding: 0 14px;
+    padding: 0 10px;
 }
 
+/* Right-side modules: transparent, just colored glyphs with generous margins. */
 #cpu,
 #network,
 #bluetooth,
 #pulseaudio,
 #battery,
+#tray,
 #custom-power,
-#custom-expand-icon,
-#tray {
-    padding: 2px 12px;
-    margin: 4px 2px;
-    background: @surface0;
-    border-radius: 8px;
+#custom-expand-icon {
+    background: transparent;
+    padding: 0 6px;
+    margin: 0 4px;
 }
 
-#cpu            { color: @peach; }
+#cpu            { color: @orange; }
 #network        { color: @blue; }
 #bluetooth      { color: @blue; }
 #pulseaudio     { color: @green; }
 #battery        { color: @green; }
-#custom-expand-icon { color: @subtext; }
 
 #battery.warning  { color: @yellow; }
 #battery.critical { color: @red; }
 #battery.charging { color: @green; }
 
-#custom-power {
-    color: @red;
-    background: @surface1;
-    font-size: 15px;
-    padding: 2px 14px;
-}
-
-#custom-power:hover {
-    background: @red;
-    color: @base;
-}
+#custom-power        { color: @red; }
+#custom-power:hover  { color: @text; }
+#custom-expand-icon  { color: @subtext; }
 
 tooltip {
     background: @mantle;
-    border: 1px solid @mauve;
+    border: 1px solid @overlay;
     border-radius: 8px;
 }
 tooltip label { color: @text; }
