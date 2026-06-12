@@ -69,6 +69,12 @@ ok "logind power-key rule written (reboot to apply)"
 # ---------- 2. place config files ----------
 say "Placing config files (existing ones are backed up)"
 place "hypr/hyprland.lua"        "$cfg/hypr/hyprland.lua"
+# modular hyprland config (required by hyprland.lua's require() calls)
+place "hypr/monitors.lua"        "$cfg/hypr/monitors.lua"
+place "hypr/input.lua"           "$cfg/hypr/input.lua"
+place "hypr/looknfeel.lua"       "$cfg/hypr/looknfeel.lua"
+place "hypr/bindings.lua"        "$cfg/hypr/bindings.lua"
+place "hypr/autostart.lua"       "$cfg/hypr/autostart.lua"
 place "hypr/hyprlock.conf"       "$cfg/hypr/hyprlock.conf"
 place "hypr/hypridle.conf"       "$cfg/hypr/hypridle.conf"
 place "hyprpaper/hyprpaper.conf" "$cfg/hypr/hyprpaper.conf"
